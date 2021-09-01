@@ -2,8 +2,11 @@
 
 namespace Litstack\Deeplable;
 
+use AwStudio\Deeplable\Facades\Translator;
 use Illuminate\Database\Eloquent\Model;
 use AwStudio\Deeplable\Translators\BaseTranslator;
+use Ignite\Crud\Models\LitFormModel;
+use Illuminate\Database\Eloquent\Collection;
 
 class FormModelTranslator extends BaseTranslator
 {
@@ -16,11 +19,26 @@ class FormModelTranslator extends BaseTranslator
      * @param string $translation
      * @return void
      */
-    protected function translateAttribute(Model $model, $attribute, $locale, $translation)
+    protected function translateAttribute(Model $model, $attribute, $locale, $translation, bool $force = true)
     {
-        $model->update([$locale => [
-            $attribute => $translation
-        ]]);
+        $value = $model->getAttribute($attribute);
+        
+        if (! $force && $value && ! is_object($value)) {
+            return;
+        }
+
+        if (! is_object($value)) {
+            $model->update([$locale => [
+                $attribute => $translation
+            ]]);
+        } elseif ($value instanceof Collection) {
+            foreach ($value as $child) {
+                if ($child instanceof LitFormModel) {
+                    Translator::for($child)
+                        ->translate($child, $locale, config('translatable.fallback_locale'), $force);
+                }
+            }
+        }
     }
 
     /**
@@ -32,6 +50,6 @@ class FormModelTranslator extends BaseTranslator
      */
     public function getTranslatedAttributes(Model $model, $locale)
     {
-        return array_keys($model->getTranslationsArray()[$locale] ?? []);
+        return $model->fields->map(fn ($field) => $field->id)->toArray();
     }
 }

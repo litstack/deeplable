@@ -34,10 +34,6 @@ class DeeplableServiceProvider extends ServiceProvider
             });
         });
 
-        $this->callAfterResolving('lit.app', function (Application $app) {
-            $app->script(__DIR__.'/../dist/deeplable.js');
-        });
-
         $this->callAfterResolving('lit.translator', function (Translator $translator) {
             $translator->addPath(__DIR__.'/../lang');
         });

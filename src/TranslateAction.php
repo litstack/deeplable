@@ -17,13 +17,16 @@ class TranslateAction
             $form
                 ->select('locale')
                 ->title(__lit('deeplable.language'))
-                ->hint(__lit('deeplable.messages.overwrite_warning'))
                 ->options(
                     collect(config('translatable.locales'))
                         ->filter(fn ($locale) => $locale != config('translatable.fallback_locale'))
                         ->mapWithKeys(fn ($locale) => [$locale => $locale])
                         ->toArray()
                 );
+
+            $form
+                ->boolean('force')
+                ->title(__lit('deeplable.force'));
         });
     }
 
@@ -37,7 +40,7 @@ class TranslateAction
         }
 
         foreach ($models as $model) {
-            Translator::for($model)->translate($model, $targetLanguage, $sourceLanguage);
+            Translator::for($model)->translate($model, $targetLanguage, $sourceLanguage, (bool) $attributes->force);
 
             $model->save();
         }
