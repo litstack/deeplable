@@ -1,6 +1,6 @@
 <?php
 
-namespace Litstack\TwoFA;
+namespace Litstack\Deeplable;
 
 use Illuminate\Support\ServiceProvider;
 
