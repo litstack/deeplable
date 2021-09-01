@@ -1,0 +1,44 @@
+{
+    "name": "litstack/deeplable",
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "cbl",
+            "email": "lennart.carbe@gmail.com"
+        }
+    ],
+    "scripts": {
+        "test": "vendor/bin/phpunit"
+    },
+    "autoload": {
+        "psr-4": {
+            "Litstack\\Deeplable\\": "src"
+        }
+    },
+    "autoload-dev": {
+        "psr-4": {
+            "Tests\\": "tests/"
+        }
+    },
+    "require": {
+        "aw-studio/laravel-deeplable": "^0.1",
+        "litstack/litstack": "^3.1.2"
+    },
+    "require-dev": {
+        "litstack/rehearsal": "^1.0.1",
+        "phpunit/phpunit": "^9.4",
+        "mockery/mockery": "^1.4"
+    },
+    "extra": {
+        "laravel": {
+            "providers": [
+                "Litstack\\TwoFA\\TwoFAServiceProvider"
+            ]
+        },
+        "branch-alias": {
+            "dev-master": "1.x-dev"
+        }
+    },
+    "minimum-stability": "dev",
+    "prefer-stable": true
+}
