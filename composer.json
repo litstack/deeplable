@@ -32,7 +32,7 @@
     "extra": {
         "laravel": {
             "providers": [
-                "Litstack\\TwoFA\\TwoFAServiceProvider"
+                "Litstack\\Deeplable\\DeeplableServiceProvider"
             ]
         },
         "branch-alias": {
