@@ -19,6 +19,12 @@ The package ships with 2 actions:
 -   `Litstack\Deeplable\TranslateAction` - Translates a single model/form
 -   `Litstack\Deeplable\TranslateAllAction` - Translates all models configured in the `deeplable.models` config
 
+Example:
+
+```php
+$page->headerLeft()->action('Übersetzen', TranslateAction::class);
+```
+
 You may add the following models to the `deeplable.models` config:
 
 -   `Ignite\Crud\Models\Form`
