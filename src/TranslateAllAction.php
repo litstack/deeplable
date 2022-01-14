@@ -4,6 +4,7 @@ namespace Litstack\Deeplable;
 
 use Ignite\Support\AttributeBag;
 use Illuminate\Support\Collection;
+use Illuminate\Support\Facades\Schema;
 use Ignite\Page\Actions\ActionModal;
 use Ignite\Support\Vue\ButtonComponent;
 use Illuminate\Support\Facades\Artisan;
@@ -40,7 +41,11 @@ class TranslateAllAction
             return response()->danger(__lit('deeplable.messages.missing_locale'));
         }
 
-        Artisan::call('deeplable:run', ['locale' => $targetLanguage, '--force' => (bool) $attributes->force]);
+        Artisan::call('deeplable:run', [
+            'locale'  => $targetLanguage,
+            '--force' => (bool) $attributes->force,
+            '--queue' => (bool) Schema::hasTable('jobs'),
+        ]);
 
         return response()->success(__lit(
             'deeplable.messages.translated',
