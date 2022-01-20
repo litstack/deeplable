@@ -5,7 +5,7 @@ namespace Litstack\Deeplable;
 use AwStudio\Deeplable\Facades\Translator;
 use AwStudio\Deeplable\Translators\BaseTranslator;
 use Closure;
-use Ignite\Crud\Models\LitFormModel;
+use Ignite\Crud\Models\Repeatable;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\Model;
 
@@ -35,13 +35,6 @@ class FormModelTranslator extends BaseTranslator
             $model->update([$locale => [
                 $attribute => $translation,
             ]]);
-        } elseif ($value instanceof Collection) {
-            foreach ($value as $child) {
-                if ($child instanceof LitFormModel) {
-                    Translator::for($child)
-                        ->translate($child, $locale, config('translatable.fallback_locale'), $force);
-                }
-            }
         }
     }
 
@@ -74,5 +67,51 @@ class FormModelTranslator extends BaseTranslator
     public function getTranslatedAttributes(Model $model, $locale)
     {
         return $model->fields->map(fn ($field) => $field->id)->toArray();
+    }
+
+    /**
+     * Translate all translatable attributes of a model.
+     *
+     * @param Illuminate\Database\Eloquent\Model $model
+     * @param mixed $attributes
+     * @param string $targetLang
+     * @param string|null $sourceLanguage
+     * @param bool $force
+     * @return void
+     */
+    public function translateAttributes(Model $model, $attributes, string $targetLang, string | null $sourceLanguage = null, bool $force = true)
+    {
+        foreach ($attributes as $attribute) {
+            if (($collection = $model->getAttribute($attribute)) instanceof Collection) {
+                $this->translateRepeatablesInCollection($collection, $targetLang, $force);
+                continue;
+            }
+            $translation = $this->api->translate(
+                (string) $model->getAttribute($attribute),
+                $targetLang,
+                $sourceLanguage
+            );
+
+            $this->translateAttribute($model, $attribute, $targetLang, $translation, $force);
+        }
+    }
+
+    
+    /**
+     * Translate all Reapeatables in the collection.
+     *
+     * @param Collection $collection
+     * @param string $locale
+     * @param boolean $force
+     * @return void
+     */
+    public function translateRepeatablesInCollection(Collection $collection, string $locale, bool $force = true)
+    {
+        foreach ($collection as $item) {
+            if ($item instanceof Repeatable) {
+                Translator::for($item)
+                        ->translate($item, $locale, config('translatable.fallback_locale'), $force);
+            }
+        }
     }
 }
