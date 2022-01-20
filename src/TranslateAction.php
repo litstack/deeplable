@@ -2,11 +2,10 @@
 
 namespace Litstack\Deeplable;
 
+use AwStudio\Deeplable\Facades\Translator;
+use Ignite\Page\Actions\ActionModal;
 use Ignite\Support\AttributeBag;
 use Illuminate\Support\Collection;
-use Ignite\Page\Actions\ActionModal;
-use Ignite\Support\Vue\ButtonComponent;
-use AwStudio\Deeplable\Facades\Translator;
 
 class TranslateAction
 {
@@ -19,7 +18,7 @@ class TranslateAction
                 ->title(__lit('deeplable.language'))
                 ->options(
                     collect(config('translatable.locales'))
-                        ->filter(fn ($locale) => $locale != config('translatable.fallback_locale'))
+                        ->filter(fn ($locale)      => $locale != config('translatable.fallback_locale'))
                         ->mapWithKeys(fn ($locale) => [$locale => $locale])
                         ->toArray()
                 );
