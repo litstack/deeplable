@@ -2,17 +2,13 @@
 
 namespace Litstack\Deeplable;
 
-use AwStudio\Deeplable\Facades\Translator;
 use AwStudio\Deeplable\Translators\BaseTranslator;
-use Closure;
-use Ignite\Crud\Models\Repeatable;
-use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\Model;
 
 class MediaModelTranslator extends BaseTranslator
 {
     /**
-     * Translate the given model attribute.
+     * Translate the custom properties attribute of the Media Model.
      *
      * @param  Model  $model
      * @param  string $attribute
