@@ -2,6 +2,7 @@
 
 namespace Litstack\Deeplable;
 
+use Ignite\Crud\Models\Media;
 use Ignite\Foundation\Litstack;
 use Ignite\Translation\Translator;
 use Ignite\Application\Application;
@@ -24,10 +25,16 @@ class DeeplableServiceProvider extends ServiceProvider
             $resolver->register(LitFormModel::class, function () {
                 return new FormModelTranslator($this->app['deeplable.api']);
             });
+            $resolver->register(Media::class, function () {
+                return new MediaModelTranslator($this->app['deeplable.api']);
+            });
 
             $resolver->strategy(function (Model $model) {
                 if ($model instanceof LitFormModel) {
                     return LitFormModel::class;
+                }
+                if ($model instanceof Media) {
+                    return Media::class;
                 }
 
                 return Translatable::class;
