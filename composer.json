@@ -21,11 +21,10 @@
 		}
 	},
 	"require": {
-		"aw-studio/laravel-deeplable": "^0.9.0",
+		"aw-studio/laravel-deeplable": "^0.8|^0.9",
 		"litstack/litstack": "^3.1.2"
 	},
 	"require-dev": {
-		"laravel/framework": "*",
 		"litstack/rehearsal": "^1.0.1",
 		"phpunit/phpunit": "^9.4",
 		"mockery/mockery": "^1.4"
@@ -41,10 +40,5 @@
 		}
 	},
 	"minimum-stability": "dev",
-	"prefer-stable": true,
-	"config": {
-		"allow-plugins": {
-			"litstack/rehearsal": true
-		}
-	}
+	"prefer-stable": true
 }
