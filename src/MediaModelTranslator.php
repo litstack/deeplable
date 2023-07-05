@@ -26,6 +26,7 @@ class MediaModelTranslator extends BaseTranslator
 
         $model->setCustomProperty($locale, array_merge($localeTranslations, [$attribute => $translation]));
         // Quietly save the model to avoid Exceptions for missing files.
+        $model->updated_at = now();
         $model->saveQuietly();
     }
 
@@ -58,6 +59,15 @@ class MediaModelTranslator extends BaseTranslator
         }
         foreach ($attributes[$sourceLanguage] as $attribute => $value) {
             if (!$value) {
+                continue;
+            }
+
+            if(
+                array_key_exists($targetLang, $attributes) &&
+                array_key_exists($attribute, $attributes[$targetLang]) &&
+                !is_null($attributes[$targetLang][$attribute]) &&
+                !$force
+            ){
                 continue;
             }
 
