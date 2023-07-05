@@ -20,12 +20,13 @@ class MediaModelTranslator extends BaseTranslator
     {
         $localeTranslations = $model->getCustomProperty($locale);
 
-        if(!is_array($localeTranslations)){
+        if (!is_array($localeTranslations)) {
             $localeTranslations = [];
         }
-        
+
         $model->setCustomProperty($locale, array_merge($localeTranslations, [$attribute => $translation]));
-        $model->save();
+        // Quietly save the model to avoid Exceptions for missing files.
+        $model->saveQuietly();
     }
 
     /**
@@ -52,11 +53,11 @@ class MediaModelTranslator extends BaseTranslator
      */
     public function translateAttributes(Model $model, $attributes, string $targetLang, string | null $sourceLanguage = null, bool $force = true)
     {
-        if(!array_key_exists($sourceLanguage, $attributes)){
+        if (!array_key_exists($sourceLanguage, $attributes)) {
             return;
         }
         foreach ($attributes[$sourceLanguage] as $attribute => $value) {
-            if(!$value){
+            if (!$value) {
                 continue;
             }
 
