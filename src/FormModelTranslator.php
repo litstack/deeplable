@@ -2,12 +2,14 @@
 
 namespace Litstack\Deeplable;
 
-use AwStudio\Deeplable\Facades\Translator;
-use AwStudio\Deeplable\Translators\BaseTranslator;
 use Closure;
+use Ignite\Crud\Models\Media;
 use Ignite\Crud\Models\Repeatable;
-use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\Model;
+use AwStudio\Deeplable\Facades\Translator;
+use Illuminate\Database\Eloquent\Collection;
+use AwStudio\Deeplable\Translators\BaseTranslator;
+use Litstack\Meta\Models\Meta;
 
 class FormModelTranslator extends BaseTranslator
 {
@@ -86,6 +88,7 @@ class FormModelTranslator extends BaseTranslator
                 $this->translateRepeatablesInCollection($collection, $targetLang, $force);
                 continue;
             }
+
             $translation = $this->api->translate(
                 (string) $model->getAttribute($attribute),
                 $targetLang,
@@ -94,6 +97,8 @@ class FormModelTranslator extends BaseTranslator
 
             $this->translateAttribute($model, $attribute, $targetLang, $translation, $force);
         }
+
+        $this->translateMeta($model, $targetLang, $force);
     }
 
     
@@ -110,7 +115,32 @@ class FormModelTranslator extends BaseTranslator
         foreach ($collection as $item) {
             if ($item instanceof Repeatable) {
                 Translator::for($item)
-                        ->translate($item, $locale, config('translatable.fallback_locale'), $force);
+                    ->translate($item, $locale, config('translatable.fallback_locale'), $force);
+            }
+            if($item instanceof Media){
+                Translator::for($item)
+                    ->translate($item, $locale, config('translatable.fallback_locale'), $force);
+            }
+        }
+    }
+
+    /**
+     * Translate meta.
+     *
+     * @param Model $model
+     * @param string $targetLang
+     * @param boolean $force
+     * @return void
+     */
+    public function translateMeta(Model $model, string $targetLang, bool $force = true)
+    {
+        // check if model has meta
+        if (method_exists($model, 'meta')) {
+            $item = $model->meta()->first();
+
+            if ($item instanceof Meta) {
+                Translator::for($item)
+                    ->translate($item, $targetLang, config('translatable.fallback_locale'), $force);
             }
         }
     }
