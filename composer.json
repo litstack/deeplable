@@ -21,7 +21,7 @@
 		}
 	},
 	"require": {
-		"aw-studio/laravel-deeplable": "^0.8|^0.9",
+		"aw-studio/laravel-deeplable": "^0.9.1",
 		"litstack/litstack": "^3.1.2"
 	},
 	"require-dev": {
