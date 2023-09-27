@@ -87,6 +87,9 @@ class FormModelTranslator extends BaseTranslator
             if (($collection = $model->getAttribute($attribute)) instanceof Collection) {
                 $this->translateRepeatablesInCollection($collection, $targetLang, $force);
                 continue;
+            }elseif($collection instanceof Media){
+                Translator::for($collection)
+                    ->translate($collection, $targetLang, config('translatable.fallback_locale'), $force);
             }
 
             $translation = $this->api->translate(
@@ -134,14 +137,20 @@ class FormModelTranslator extends BaseTranslator
      */
     public function translateMeta(Model $model, string $targetLang, bool $force = true)
     {
-        // check if model has meta
-        if (method_exists($model, 'meta')) {
-            $item = $model->meta()->first();
-
-            if ($item instanceof Meta) {
-                Translator::for($item)
-                    ->translate($item, $targetLang, config('translatable.fallback_locale'), $force);
+        $item = null;
+        // check if model uses trait FormHasMeta
+        if ($model instanceof \Ignite\Crud\Models\Form) {
+            if(in_array('Litstack\Meta\Traits\FormHasMeta', class_uses($model->config_type))){
+                $item = Meta::where('model_type', 'Ignite\Crud\Models\Form')->where('model_id', $model->id)->first();
             }
+        }
+        // check if model has meta
+        if (method_exists($model, 'meta') ) {
+            $item = $model->meta()->first();
+        }
+        if ($item instanceof Meta) {
+            Translator::for($item)
+                ->translate($item, $targetLang, config('translatable.fallback_locale'), $force);
         }
     }
 }
