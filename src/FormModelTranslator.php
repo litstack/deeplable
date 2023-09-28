@@ -92,6 +92,12 @@ class FormModelTranslator extends BaseTranslator
                     ->translate($collection, $targetLang, config('translatable.fallback_locale'), $force);
             }
 
+            if(class_uses($model, 'Ignite\Crud\Models\Traits\Sluggable')){
+                if(($attribute ==  't_slug')){
+                    continue;
+                }
+            }
+
             $translation = $this->api->translate(
                 (string) $model->getAttribute($attribute),
                 $targetLang,
